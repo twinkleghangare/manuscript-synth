@@ -1,0 +1,7 @@
+numpy
+pillow
+opencv-python-headless
+pyyaml
+tqdm
+datasets
+huggingface_hub

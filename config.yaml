@@ -1,0 +1,110 @@
+seed: 42
+output_dir: output
+image_size: [1400, 1000]        # width, height in pixels
+samples_per_script: 100
+splits: {train: 0.85, validation: 0.10, test: 0.05}
+
+# Which background types to use (randomly chosen per sample)
+background_kinds: [paper, palm_leaf]
+
+# Hugging Face repository for --push
+hf_repo: "twinklemghangareaids27/indic-manuscripts-synthetic"
+
+# ── Background settings ──────────────────────────────────────────────────────
+backgrounds:
+  foxing:
+    enabled: true
+    count_range: [25, 75]
+    radius_range: [3.0, 16.0]
+    intensity_range: [0.35, 0.85]
+  tea_stains:
+    enabled: true
+    count_range: [2, 5]
+    intensity_range: [0.10, 0.28]
+  frayed_edges:
+    enabled: true
+    prob: 0.80
+    border_range: [12, 26]
+  palm_leaf:
+    veins_count_range: [35, 65]
+    holes_count_range: [2, 3]
+    hole_radius_range: [9, 15]
+    tones_count_range: [2, 4]
+
+# ── Page layout settings ─────────────────────────────────────────────────────
+layout:
+  margin: 90                    # safe area margin around canvas
+  note_width_range: [140, 200]  # width of marginal annotation column
+  note_gap_range: [20, 36]      # separation between main block and note
+  two_block_prob: 0.45          # probability of dividing main text into two blocks
+  force_highlight_line: true    # force exactly one line in vivid red ink
+  highlight_prob: 0.10          # additional red highlight line probability
+  markers_count_range: [2, 5]   # number of verse markers (e.g. ।९।) per page
+  highlight_washes_count_range: [0, 3]
+
+# ── Rendering defaults (overridable per-script) ─────────────────────────────
+render:
+  base_font_size: 34            # main block font size (pt)
+  note_font_size: 22            # marginal annotation font size (pt)
+  main_words: 140               # target word count for main passage
+  note_words: 30                # target word count for marginal annotation
+  line_gap: 1.65                # line spacing factor relative to font size
+
+  # Scribe profile parameters (sampled once per page for handwriting individuality)
+  scribe:
+    slant_drift_range: [-3.2, 3.2]    # global page slant angle in degrees
+    slant_jitter: 1.3                 # per-word jitter around scribe slant
+    spacing_factor_range: [0.94, 1.10] # inter-word spacing factor
+    pressure_range: [0.88, 1.15]      # hand pressure (affects ink opacity/weight)
+    redip_interval_range: [2, 4]      # ink dip every N lines
+    redip_darkening: 1.25             # darkening right after ink dip
+    fade_min_alpha: 155               # alpha floor as pen dries out before next dip
+    crossed_out_prob: 0.22            # probability of an occasional crossed-out error word
+
+# ── Ink aging artifacts ──────────────────────────────────────────────────────
+ink:
+  bleed:
+    enabled: true
+    radius_range: [0.8, 1.8]
+    alpha_blend_range: [0.32, 0.50]
+  stroke_jitter:
+    enabled: true
+  patchy_fading:
+    enabled: true
+    min_opacity_range: [0.60, 0.85]
+  smudges:
+    enabled: true
+    count_range: [1, 3]               # directional hand/brush smudges
+    smear_strength_range: [0.25, 0.50]
+  blots:
+    enabled: true
+    prob: 0.55                        # chance of ink blots on the folio
+    count_range: [1, 2]
+    radius_range: [5, 18]
+
+# ── Deformation settings ─────────────────────────────────────────────────────
+deform:
+  warp_amp: 6.0                 # sinusoidal warp amplitude (pixels)
+  do_curl: true                 # enable page-curl effect
+  curl_prob: 0.50               # probability of page-curl on folio corner
+  curl_fraction_range: [0.06, 0.16]
+  do_folds: true                # enable fold creases
+  folds_prob: 0.70              # probability of a fold crease
+  folds_count_range: [1, 2]
+
+# ── Scripts: add a new script here; no code changes needed ──────────────────
+# Each entry must supply at least `font` and `corpus`.
+# Optional: base_font_size, note_font_size, main_words, note_words
+# to override the global render defaults for that script.
+scripts:
+  devanagari:
+    font:   fonts/NotoSansDevanagari-Regular.ttf
+    corpus: corpora/devanagari.txt
+
+  modi:
+    font:   fonts/NotoSansModi-Regular.ttf
+    corpus: corpora/modi.txt
+
+  sharada:
+    font:   fonts/NotoSansSharada-Regular.ttf
+    corpus: corpora/sharada.txt
